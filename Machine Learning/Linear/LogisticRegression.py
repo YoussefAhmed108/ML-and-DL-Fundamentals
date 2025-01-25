@@ -13,12 +13,11 @@ class LogisticRegression():
         self.tol=tol
 
     def fit(self, X , y):
-
         _ , n_features = X.shape
         num_classes = len(np.unique(y))
-
-        self.coef_ = np.random.randn((num_classes, n_features))
-        self.intercept_ = np.random.randn(num_classes)
+        print(num_classes)
+        self.coef_ = np.random.randn(num_classes, n_features)
+        self.intercept_ = np.zeros(num_classes)
 
         for _ in range(self.max_iter):
             z = X @ self.coef_.T + self.intercept_
@@ -48,17 +47,17 @@ class LogisticRegression():
         """
         if self.penalty == 'l2':
             # L2 adds λ * w to the gradient
-            return gradient + (1 / self.C) * self.coef_
+            return gradient.T + (1 / self.C) * self.coef_
         
         elif self.penalty == 'l1':
             # L1 adds λ * sign(w) to the gradient
-            return gradient + (1 / self.C) * np.sign(self.coef_)
+            return gradient.T + (1 / self.C) * np.sign(self.coef_)
         
         elif self.penalty == 'elasticnet':
             # Elastic Net is a combination of L1 and L2;
             l2_term = self.coef_ / self.C       
             l1_term = np.sign(self.coef_) / self.C  
-            return gradient + l1_term + l2_term
+            return gradient.T + l1_term + l2_term
         
         else:
             # No regularization

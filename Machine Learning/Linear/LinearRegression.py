@@ -17,20 +17,23 @@ class LinearRegression:
         X_inv = np.linalg.pinv(X.T @ X) @ X.T
         # Multiply the pseudo-inverse of X with y
         self.coef = X_inv @ y
-        self.intercept_= self.coef[-1] if self.fit_intercept else 0
-        self.coef_= self.coef[:-1] if self.fit_intercept else self.coef
+        self.intercept_= self.coef[0] if self.fit_intercept else 0
+        self.coef_= self.coef[1:] if self.fit_intercept else self.coef
 
     def predict(self , X):
+        coef_with_bias=self.coef_
         # Add intercept to X if fit_intercept is True (Bias absorption)
         if self.fit_intercept:
             X=np.c_[np.ones(X.shape[0]),X]
+            coef_with_bias= np.append(self.coef_,self.intercept_)
         
         # Return the dot product of X and the coefficients
-        return X @ self.coef_
+        return X @ coef_with_bias
 
 
     def score(self , X , y):
         predicted_value = self.predict(X)
         # Calculate the R^2 score
         r2 = r2_score(y, predicted_value)
+        return r2
 

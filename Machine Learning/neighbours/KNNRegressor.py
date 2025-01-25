@@ -10,8 +10,10 @@ class KNNRegressor():
 
     def predict(self, X):
         y_pred = np.zeros(X.shape[0])
-        for i in range(X.shape[0]):
-            y_pred[i] = np.mean(self.y[np.argsort(np.linalg.norm(self.X - X[i], axis=1))[:self.n_neighbours]])
+        for x in X:
+            distances = np.linalg.norm(self.X - x, axis=1)
+            nearest_neighbors = self.y[np.argsort(distances)[:self.n_neighbours]]
+            y_pred.append(np.mean(nearest_neighbors))
         return y_pred
 
     def score(self, X, y):

@@ -1,12 +1,11 @@
 import numpy as np
 from utils.RegressionMetrics import r2_score
-class LinearRegression():
-    def__init__(self,fit_intercept=True , positive=False):
+class LinearRegression:
+    def __init__(self,fit_intercept=True , positive=False):
         self.fit_intercept=fit_intercept
         self.positive=positive
         self.coef_=None
         self.intercept_=None
-
 
     def fit(self, X , y):
         # Add intercept to X if fit_intercept is True (Bias absorption)

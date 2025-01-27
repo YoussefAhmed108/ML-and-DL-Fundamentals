@@ -7,11 +7,16 @@ from sklearn.linear_model import LinearRegression as skLinearRegression
 from sklearn.linear_model import LogisticRegression as skLogisticRegression
 from sklearn.linear_model import Ridge as skRidgeRegression
 from sklearn.linear_model import Lasso as skLassoRegression
+from sklearn.tree import DecisionTreeClassifier as skDecisionTreeClassifier
+from sklearn.tree import DecisionTreeRegressor as skDecisionTreeRegressor
 
 from Linear.LogisticRegression import LogisticRegression
 from Linear.LinearRegression import LinearRegression
 from Linear.RidgeRegression import RidgeRegression
 from Linear.LassoRegression import LassoRegression
+from Trees.DecisionTreeClassifier import DecisionTreeClassifier
+#from Trees.DecisionTreeRegressor import DecisionTreeRegressor
+from sklearn.tree import export_text
 
 
 
@@ -73,16 +78,42 @@ X_train_clf, X_test_clf, y_train_clf, y_test_clf = train_test_split(classificati
 #################################
 # Lasso Regression
 #################################
-my_lasso = LassoRegression()
-my_lasso.fit(X_train_reg, y_train_reg)
-print(my_lasso.coef_)
-print(my_lasso.intercept_)
-print(my_lasso.score(X_test_reg, y_test_reg))
-sk_lasso = skLassoRegression()
-sk_lasso.fit(X_train_reg, y_train_reg)
-print(sk_lasso.coef_)
-print(sk_lasso.intercept_)
-print(sk_lasso.score(X_test_reg, y_test_reg))
+# my_lasso = LassoRegression()
+# my_lasso.fit(X_train_reg, y_train_reg)
+# print(my_lasso.coef_)
+# print(my_lasso.intercept_)
+# print(my_lasso.score(X_test_reg, y_test_reg))
+# sk_lasso = skLassoRegression()
+# sk_lasso.fit(X_train_reg, y_train_reg)
+# print(sk_lasso.coef_)
+# print(sk_lasso.intercept_)
+# print(sk_lasso.score(X_test_reg, y_test_reg))
+
+################################################
+# Decision Tree Classifier
+################################################
+my_dtc = DecisionTreeClassifier()
+my_dtc.fit(X_train_clf, y_train_clf)
+print(my_dtc.score(X_test_clf, y_test_clf))
+my_dtc.print_tree(feature_names=classification_data.feature_names)
+sk_dtc = skDecisionTreeClassifier()
+sk_dtc.fit(X_train_clf, y_train_clf)
+print(sk_dtc.score(X_test_clf, y_test_clf))
+tree_text = export_text(sk_dtc, feature_names=classification_data.feature_names)
+print(tree_text)
+
+################################################
+# Decision Tree Regressor
+################################################
+# my_dtr = DecisionTreeRegressor()
+# my_dtr.fit(X_train_reg, y_train_reg)
+# print(my_dtr.score(X_test_reg, y_test_reg))
+# my_dtr.print_tree()
+# sk_dtr = skDecisionTreeRegressor()
+# sk_dtr.fit(X_train_reg, y_train_reg)
+# print(sk_dtr.score(X_test_reg, y_test_reg))
+
+###################################################
 
 
 print("Hello World")

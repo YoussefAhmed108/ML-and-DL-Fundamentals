@@ -1,7 +1,7 @@
 import numpy as np
 
 class DecisionTree():
-    def __init__(self,type , metric, max_depth=None , criterion='gini' , min_samples_split=2 , min_samples_leaf=1 , splitter='best' ):
+    def __init__(self , type , max_depth=None , criterion='gini' , min_samples_split=2 , min_samples_leaf=1 , splitter='best' , metric=None ):
         self.max_depth = max_depth
         self.criterion = criterion
         self.min_samples_split = min_samples_split
@@ -19,11 +19,11 @@ class DecisionTree():
         number_of_samples , number_of_features = X.shape
 
         if len(y) < self.min_samples_split or len(set(y)) == 1 or self.max_depth == 0:
-            value = np.mean(y) if type == 'regression' else np.bincount(y).argmax()
+            value = np.mean(y) if self.type == 'regression' else np.bincount(y).argmax()
             return Node(left=None , right=None , feature=None , threshold=None , value=value)
         
         if(len(set(y)) == 1):
-            value = np.mean(y) if type == 'regression' else np.bincount(y).argmax()
+            value = np.mean(y) if self.type == 'regression' else np.bincount(y).argmax()
             return Node(left=None , right=None , feature=None , threshold=None , value=value)
         
         features = np.random.choice(X.shape[1] , X.shape[1] , replace=False)
@@ -66,11 +66,11 @@ class DecisionTree():
         
 
     def _impurity(self, left_values , right_values):
-        left_impurity = self.criterion(left_values) if type == 'classification' else self.criterion(left_values  , np.mean(left_values))
-        right_impurity = self.criterion(right_values) if type == 'classification' else self.criterion(right_values , np.mean(right_values))
+        left_impurity = self.criterion(left_values) if self.type == 'classification' else self.criterion(left_values  , np.mean(left_values) if len(left_values) > 0 else 0)
+        right_impurity = self.criterion(right_values) if self.type == 'classification' else self.criterion(right_values , np.mean(right_values) if len(right_values) > 0 else 0)
 
         n = len(left_values) + len(right_values)
-        
+
         # Weighted sum of the impurities
         weighted_left_impurity = (len(left_values)/n)*left_impurity
         weighted_right_impurity = (len(right_values)/n)*right_impurity
@@ -81,7 +81,7 @@ class DecisionTree():
     
     def _predict(self, inputs):
         node = self.tree
-        while node.value != None:
+        while node.value is None:
             if inputs[node.feature] < node.threshold:
                 node = node.left
             else:
@@ -91,6 +91,19 @@ class DecisionTree():
     def score(self, X, y):
         predictions = self.predict(X)
         return self.metric(y , predictions)
+    
+    # Write a function to print the tree in a readable format
+    def _show_tree(self, node, feature_names ,  depth=0):
+        if node.value is not None:
+            print(f"{'|   ' * depth}Leaf: {node.value}")
+        else:
+            print(f"{'|   ' * depth}Feature {feature_names[node.feature]} < {node.threshold}")
+        
+            new_depth = depth + 1
+            self._show_tree(node.left, feature_names, depth=new_depth)
+            self._show_tree(node.right,feature_names, depth=new_depth)
+
+        
 
 
 class Node():

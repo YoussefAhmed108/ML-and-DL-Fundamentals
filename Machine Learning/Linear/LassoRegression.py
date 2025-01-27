@@ -1,4 +1,4 @@
-from utils import RegressionMetrics
+from utils.RegressionMetrics import r2_score
 from utils.Functions import soft_threshold
 import numpy as np
 class LassoRegression():
@@ -14,10 +14,10 @@ class LassoRegression():
     def fit(self, X, y):
         n , m = X.shape
         self.coef_ = np.random.randn(m)
-        if self.fit_intercept:
-            self.intercept_ = np.random.randn()
+        self.intercept_ = 0 if self.fit_intercept else None  # Initialize intercept
         
         for _ in range(self.max_iter):
+            coef_prev = self.coef_.copy()  # Save coefficients for convergence check
             for j in range(m):
                 X_j = X[:, j]
                 y_pred = self.predict(X)
@@ -30,14 +30,19 @@ class LassoRegression():
                 w_j_new = soft_threshold(rho_j, gamma)
                 self.coef_[j] = w_j_new
 
-            if np.linalg.norm(r_j) < self.tol:
+            if self.fit_intercept:
+                self.intercept_ = np.mean(y - X @ self.coef_)
+            
+
+            coef_change = np.linalg.norm(self.coef_ - coef_prev)
+            if coef_change < self.tol:
                 break
         print("Fit")
 
 
     def predict(self, X):
-        return X @ self.coef_ # + self.intercept_
+        return X @ self.coef_ + self.intercept_
     
     def score(self, X, y):
         y_pred = self.predict(X)
-        return RegressionMetrics.r2_score(y, y_pred)
+        return r2_score(y, y_pred)

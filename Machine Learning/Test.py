@@ -6,10 +6,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression as skLinearRegression
 from sklearn.linear_model import LogisticRegression as skLogisticRegression
 from sklearn.linear_model import Ridge as skRidgeRegression
+from sklearn.linear_model import Lasso as skLassoRegression
 
 from Linear.LogisticRegression import LogisticRegression
 from Linear.LinearRegression import LinearRegression
 from Linear.RidgeRegression import RidgeRegression
+from Linear.LassoRegression import LassoRegression
 
 
 
@@ -57,20 +59,30 @@ X_train_clf, X_test_clf, y_train_clf, y_test_clf = train_test_split(classificati
 ########################
 # Ridge Regression
 ########################
-my_ridge = RidgeRegression()
-my_ridge.fit(X_train_reg, y_train_reg)
-print(my_ridge.coef_)
-print(my_ridge.intercept_)
-print(my_ridge.score(X_test_reg, y_test_reg))
-sk_ridge = skRidgeRegression()
-sk_ridge.fit(X_train_reg, y_train_reg)
-print(sk_ridge.coef_)
-print(sk_ridge.intercept_)
-print(sk_ridge.score(X_test_reg, y_test_reg))
+# my_ridge = RidgeRegression()
+# my_ridge.fit(X_train_reg, y_train_reg)
+# print(my_ridge.coef_)
+# print(my_ridge.intercept_)
+# print(my_ridge.score(X_test_reg, y_test_reg))
+# sk_ridge = skRidgeRegression()
+# sk_ridge.fit(X_train_reg, y_train_reg)
+# print(sk_ridge.coef_)
+# print(sk_ridge.intercept_)
+# print(sk_ridge.score(X_test_reg, y_test_reg))
 
 #################################
 # Lasso Regression
 #################################
+my_lasso = LassoRegression()
+my_lasso.fit(X_train_reg, y_train_reg)
+print(my_lasso.coef_)
+print(my_lasso.intercept_)
+print(my_lasso.score(X_test_reg, y_test_reg))
+sk_lasso = skLassoRegression()
+sk_lasso.fit(X_train_reg, y_train_reg)
+print(sk_lasso.coef_)
+print(sk_lasso.intercept_)
+print(sk_lasso.score(X_test_reg, y_test_reg))
 
 
 print("Hello World")

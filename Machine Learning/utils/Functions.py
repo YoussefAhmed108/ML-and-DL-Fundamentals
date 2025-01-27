@@ -50,3 +50,47 @@ def soft_threshold(rho, alpha):
         The soft threshold of the input array.
     """
     return np.sign(rho) * np.maximum(np.abs(rho) - alpha, 0)
+
+def gini_index(values , mean = None):
+    """
+    Returns the gini impurity of the input array.
+    
+    Parameters
+    ----------
+    values : np.ndarray
+        The input array.
+    mean : float
+        The mean value of the input array.
+    
+    Returns
+    -------
+    float
+        The gini impurity of the input array.
+    """
+    if mean is None:
+        n = len(values)
+        if n == 0:
+            return 0
+        return 1 - np.sum([(np.sum(values == c) / n) ** 2 for c in np.unique(values)])
+    else:
+        return np.sum((values - mean) ** 2)
+
+def entropy(values):
+    """
+    Returns the entropy of the input array.
+    
+    Parameters
+    ----------
+    values : np.ndarray
+        The input array.
+    
+    Returns
+    -------
+    float
+        The entropy of the input array.
+    """
+    n = len(values)
+    if n == 0:
+        return 0
+    return -np.sum([(np.sum(values == c) / n) * np.log2(np.sum(values == c) / n) for c in np.unique(values)])
+   

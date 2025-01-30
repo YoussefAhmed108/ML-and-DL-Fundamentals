@@ -18,12 +18,8 @@ class DecisionTree():
     def _grow_tree(self, X, y, depth=0):
         number_of_samples , number_of_features = X.shape
 
-        if len(y) < self.min_samples_split or len(set(y)) == 1 or depth == self.max_depth:
+        if len(y) < self.min_samples_split or len(np.unique(y)) == 1 or depth == self.max_depth:
             value = (np.mean(y) if len(y) > 0 else 0) if self.type == 'regression' else np.bincount(y).argmax()
-            return Node(left=None , right=None , feature=None , threshold=None , value=value)
-        
-        if(len(set(y)) == 1):
-            value = np.mean(y) if self.type == 'regression' else np.bincount(y).argmax()
             return Node(left=None , right=None , feature=None , threshold=None , value=value)
         
         features = np.random.choice(X.shape[1] , X.shape[1] , replace=False)

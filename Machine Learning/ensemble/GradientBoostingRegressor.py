@@ -3,7 +3,7 @@ from Trees.DecisionTreeRegressor import DecisionTreeRegressor
 from utils.RegressionMetrics import r2_score
 
 class GradientBoostingRegressor():
-    def __init_(self, n_estimators=100, max_depth=3, learning_rate=0.1):
+    def __init__(self, n_estimators=100, max_depth=3, learning_rate=0.1):
         self.n_estimators = n_estimators
         self.max_depth = max_depth
         self.learning_rate = learning_rate

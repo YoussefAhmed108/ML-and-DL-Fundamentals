@@ -12,6 +12,7 @@ from sklearn.tree import DecisionTreeRegressor as skDecisionTreeRegressor
 from sklearn.ensemble import RandomForestClassifier as skRandomForestClassifier
 from sklearn.ensemble import RandomForestRegressor as skRandomForestRegressor
 from sklearn.ensemble import GradientBoostingClassifier as skGradientBoostingClassifier
+from sklearn.ensemble import GradientBoostingRegressor as skGradientBoostingRegressor
 
 from Linear.LogisticRegression import LogisticRegression
 from Linear.LinearRegression import LinearRegression
@@ -137,16 +138,35 @@ X_train_clf, X_test_clf, y_train_clf, y_test_clf = train_test_split(classificati
 ###################################################
 # Random Forest Regressor
 ###################################################
-my_rfr = RandomForestRegressor(n_estimators=100 , max_depth=5)
-my_rfr.fit(X_train_reg, y_train_reg)
-print(my_rfr.score(X_test_reg, y_test_reg))
-sk_rfr = skRandomForestRegressor(n_estimators=100 , max_depth=5)
-sk_rfr.fit(X_train_reg, y_train_reg)
-print(sk_rfr.score(X_test_reg, y_test_reg))
+# my_rfr = RandomForestRegressor(n_estimators=100 , max_depth=5)
+# my_rfr.fit(X_train_reg, y_train_reg)
+# print(my_rfr.score(X_test_reg, y_test_reg))
+# sk_rfr = skRandomForestRegressor(n_estimators=100 , max_depth=5)
+# sk_rfr.fit(X_train_reg, y_train_reg)
+# print(sk_rfr.score(X_test_reg, y_test_reg))
 
 ###################################################
 # Gradient Boosting Classifier
 ###################################################
+# my_gbc = GradientBoostingClassifier(n_estimators=100)
+# my_gbc.fit(X_train_clf, y_train_clf)
+# print(my_gbc.score(X_test_clf, y_test_clf))
+# sk_gbc = skGradientBoostingClassifier(n_estimators=100)
+# sk_gbc.fit(X_train_clf, y_train_clf)
+# print(sk_gbc.score(X_test_clf, y_test_clf))
+
+###################################################
+# Gradient Boosting Regressor
+###################################################
+my_gbr = GradientBoostingRegressor(n_estimators=100)
+my_gbr.fit(X_train_reg, y_train_reg)
+print(my_gbr.score(X_test_reg, y_test_reg))
+sk_gbr = skGradientBoostingRegressor(n_estimators=100)
+sk_gbr.fit(X_train_reg, y_train_reg)
+print(sk_gbr.score(X_test_reg, y_test_reg))
+
+
+
 
 
 print("Hello World")

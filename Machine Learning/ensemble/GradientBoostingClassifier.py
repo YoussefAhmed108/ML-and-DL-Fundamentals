@@ -34,9 +34,11 @@ class GradientBoostingClassifier():
             p = np.exp(self.F_m) / np.sum(np.exp(self.F_m), axis=1, keepdims=True)  # Softmax probabilities
             r_im = y_one_hot - p  # Pseudo residuals
             tree = DecisionTreeClassifier(self.max_depth, self.criterion, self.min_samples_split, self.min_samples_leaf)
-            tree.fit(X, r_im)
+            tree.fit(X, np.argmax(r_im, axis=1))  # Convert one-hot residuals back to class labels
             self.trees.append(tree)
-            f_0 = f_0 + self.learning_rate * tree.predict(X)
+            predictions = tree.predict(X)
+            predictions = np.eye(n_classes)[predictions.astype(int)]  # Convert labels to logits
+            self.F_m = self.F_m + (self.learning_rate * predictions)
 
             # leaf_nodes = tree.get_leaf_nodes()
             # for node in leaf_nodes:
@@ -50,32 +52,40 @@ class GradientBoostingClassifier():
             #     # Assign terminal node value
             #     node.value = gamma_j
 
-        predictions = tree.predict(X)
-        F_m += self.learning_rate * predictions
+        # predictions = tree.predict(X)
+        # predictions = np.eye(n_classes)[predictions.astype(int)]  # Convert labels to logits
+        # self.F_m = self.F_m + (self.learning_rate * predictions)
 
     def predict(self, X):
-         
-        n_samples = X.shape[0]
+        """ Predict class labels using Gradient Boosting Classifier """
+        n_samples = X.shape[0]  # Use test set size (36)
         n_classes = len(self.classes)
 
-        # Step 1: Initialize with F0 (Log Priors)
-        F_m = np.full((n_samples, n_classes), self.f_0)  # Initial prediction
+        # Step 1: Initialize with F0 (Log Priors) - Based on test set size
+        F_m = np.full((n_samples, n_classes), np.log(1 / n_classes))  # Use priors
 
+        # Step 2: Sum Contributions from All Trees
         for tree in self.trees:
             predictions = tree.predict(X)
-            F_m += self.learning_rate * predictions
+
+            # Ensure predictions match F_m's shape
+            if predictions.ndim == 1:
+                predictions = np.eye(n_classes)[predictions.astype(int)]
+
+            F_m += self.learning_rate * predictions  # Update predictions
 
         # Step 3: Convert Raw Scores to Probabilities
         if n_classes == 2:  # Binary classification
-            probs = 1 / (1 + np.exp(-F_m[:, 1]))  # Sigmoid function
-            preds = (probs > 0.5).astype(int)  # Assign class 1 if probability > 0.5
+            probs = 1 / (1 + np.exp(-F_m[:, 0]))  # Sigmoid for binary
+            preds = (probs > 0.5).astype(int)
 
         else:  # Multi-class classification
             exp_F = np.exp(F_m)
-            probs = exp_F / np.sum(exp_F, axis=1, keepdims=True)  # Softmax function
-            preds = np.argmax(probs, axis=1)  # Class with highest probability
-        
+            probs = exp_F / np.sum(exp_F, axis=1, keepdims=True)  # Softmax
+            preds = np.argmax(probs, axis=1)
+
         return preds
+
 
     def score(self, X, y):
         y_pred = self.predict(X)

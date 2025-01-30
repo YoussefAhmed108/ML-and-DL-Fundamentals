@@ -3,7 +3,7 @@ from utils.RegressionMetrics import r2_score
 import numpy as np
 
 class RandomForestRegressor():
-    def __init__(self, n_estimators=100, max_depth=None, criterion='gini', min_samples_split=2, min_samples_leaf=1 , max_features=3 , bootstrap=True):
+    def __init__(self, n_estimators=100, max_depth=None, criterion='gini', min_samples_split=2, min_samples_leaf=1 , max_features='sqrt' , bootstrap=True):
         self.n_estimators = n_estimators
         self.max_depth = max_depth
         self.criterion = criterion
@@ -15,27 +15,39 @@ class RandomForestRegressor():
 
 
     def fit(self, X, y):
+        n_samples, n_features = X.shape
+
+        if isinstance(self.max_features, str):
+            if self.max_features == 'sqrt':
+                self.max_features = int(np.sqrt(n_features))
+            elif self.max_features == 'log2':
+                self.max_features = int(np.log2(n_features))
+            else:
+                self.max_features = n_features  # Use all features
+        elif self.max_features is None:
+            self.max_features = n_features
+        
         for _ in range(self.n_estimators):
             tree = DecisionTreeRegressor(self.max_depth, self.criterion, self.min_samples_split, self.min_samples_leaf)
             # Select random features
-            random_features = np.random.choice(X.shape[1], self.max_features, replace=False)
+            selected_features = np.random.choice(n_features, self.max_features, replace=False)
             if self.bootstrap:
                 X_sample , y_sample = self._bootstrap_sample(X, y)
             else:
                 X_sample , y_sample = X, y
             
-            tree.fit(X_sample[: , random_features], y_sample)
-            self.trees.append(tree)
+            tree.fit(X_sample[: , selected_features], y_sample)
+            self.trees.append((tree , selected_features))
     
     def _bootstrap_sample(self, X, y):
         n_samples = X.shape[0]
-        indices = np.random.choice(n_samples, n_samples, replace=True)
+        indices = np.random.choice(n_samples, size=n_samples, replace=True)
         return X[indices], y[indices]
     
     def predict(self, X):
-        predictions = np.array([tree.predict(X) for tree in self.trees])
+        predictions = np.array([tree.predict(X[: , features]) for tree , features in self.trees])
         predictions = np.swapaxes(predictions, 0, 1)
-        y_pred = [np.bincount(prediction).argmax() for prediction in predictions]
+        y_pred = [np.mean(prediction) for prediction in predictions]
         return np.array(y_pred)
     
     def score(self, X, y):

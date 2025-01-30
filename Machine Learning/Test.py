@@ -130,7 +130,7 @@ X_train_clf, X_test_clf, y_train_clf, y_test_clf = train_test_split(classificati
 # my_rfc = RandomForestClassifier(n_estimators=100)
 # my_rfc.fit(X_train_clf, y_train_clf)
 # print(my_rfc.score(X_test_clf, y_test_clf))
-# sk_rfc = skRandomForestClassifier()
+# sk_rfc = skRandomForestClassifier(n_estimators=100)
 # sk_rfc.fit(X_train_clf, y_train_clf)
 # print(sk_rfc.score(X_test_clf, y_test_clf))
 

@@ -75,7 +75,7 @@ def gini_index(values , mean = None):
     else:
         return np.sum((values - mean) ** 2)
 
-def entropy(values):
+def entropy(values , mean = None):
     """
     Returns the entropy of the input array.
     
@@ -89,8 +89,11 @@ def entropy(values):
     float
         The entropy of the input array.
     """
-    n = len(values)
-    if n == 0:
-        return 0
-    return -np.sum([(np.sum(values == c) / n) * np.log2(np.sum(values == c) / n) for c in np.unique(values)])
+    if mean is None:
+        n = len(values)
+        if n == 0:
+            return 0
+        return -np.sum([(np.sum(values == c) / n) * np.log2(np.sum(values == c) / n) for c in np.unique(values)])
+    else:
+        return np.sum(-values * np.log2(values))
    

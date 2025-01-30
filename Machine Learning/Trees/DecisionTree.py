@@ -18,8 +18,8 @@ class DecisionTree():
     def _grow_tree(self, X, y, depth=0):
         number_of_samples , number_of_features = X.shape
 
-        if len(y) < self.min_samples_split or len(set(y)) == 1 or self.max_depth == 0:
-            value = np.mean(y) if self.type == 'regression' else np.bincount(y).argmax()
+        if len(y) < self.min_samples_split or len(set(y)) == 1 or depth == self.max_depth:
+            value = (np.mean(y) if len(y) > 0 else 0) if self.type == 'regression' else np.bincount(y).argmax()
             return Node(left=None , right=None , feature=None , threshold=None , value=value)
         
         if(len(set(y)) == 1):
@@ -105,7 +105,16 @@ class DecisionTree():
 
         
 
-
+    def get_leaf_nodes(self):
+        return self._get_leaf_nodes(self.tree)
+    
+    def _get_leaf_nodes(self, node):
+        if node.is_leaf():
+            return [node]
+        left_nodes = self._get_leaf_nodes(node.left)
+        right_nodes = self._get_leaf_nodes(node.right)
+        return left_nodes + right_nodes
+    
 class Node():
     def __init__(self , left , right , feature , threshold , value):
         self.left = left
@@ -113,3 +122,6 @@ class Node():
         self.feature = feature  
         self.threshold = threshold
         self.value = value
+
+    def is_leaf(self):
+        return self.value is not None
